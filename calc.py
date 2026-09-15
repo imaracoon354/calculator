@@ -5,17 +5,33 @@ def tokenizer(expression):
         char = expression[i]
         if char.isdigit():
             digits = ""
+            decimal_count = 0
+            digit_count = 0
+
             while i<len(expression) and (expression[i].isdigit() or expression[i] == "."):
+                if expression[i] == ".":
+                    decimal_count += 1
+
+                    if decimal_count > 1:
+                        raise ValueError(f"Invalid number: {digits+expression[i]}")
+                else:
+                    digit_count += 1
+
                 digits += expression[i]
                 i += 1
+
+            if digit_count < 1:
+                raise ValueError(f"invalid number: {digits}")
+                
             token.append(digits)
+
         elif char in "+-*/()":
             token.append(char)
             i += 1
         elif char.isspace():
             i += 1
         else:
-            raise ValueError(f":Invalid character: {char}")
+            raise ValueError(f"Invalid character: {char}")
     return token
 
 def parser(tokens):
