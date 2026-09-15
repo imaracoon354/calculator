@@ -9,7 +9,7 @@ def tokenizer(expression):
                 digits += expression[i]
                 i += 1
             token.append(digits)
-        elif char in "+-*/":
+        elif char in "+-*/()":
             token.append(char)
             i += 1
         elif char.isspace():
@@ -23,9 +23,18 @@ def parser(tokens):
 
     def factor():
         nonlocal position
-        value = float(tokens[position])
-        position += 1
-        return value
+
+        if tokens[position] == "(":
+            position += 1
+            value = expression()
+            if tokens[position] != ")":
+                raise ValueError("Expected ')")
+            position += 1
+            return value
+        else:
+            value = float(tokens[position])
+            position += 1
+            return value
 
     def term():
         nonlocal position
