@@ -18,6 +18,47 @@ def tokenizer(expression):
             raise ValueError(f":Invalid character: {char}")
     return token
 
+def parser(tokens):
+    position = 0
+
+    def factor():
+        nonlocal position
+        value = float(tokens[position])
+        position += 1
+        return value
+
+    def term():
+        nonlocal position
+        value = factor()
+
+        while position < len(tokens) and tokens[position] in ("*","/"):
+            operator = tokens[position]
+            position += 1
+
+            right = factor()
+            if operator == "*":
+                value *= right
+            else:
+                value /= right
+        return value
+
+    def expression():
+        nonlocal position
+        value = term()
+
+        while position < len(tokens) and tokens[position] in ("+","-"):
+            operator = tokens[position]
+            position += 1
+
+            right = term()
+            if operator == "+":
+                value += right
+            else:
+                value -= right
+        return value
+    return expression()
+
 expression = input("enter an expression: ")
 tokens = tokenizer(expression)
-print(tokens)
+result = parser(tokens)
+print(result)
